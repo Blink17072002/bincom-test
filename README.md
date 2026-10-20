@@ -10,7 +10,13 @@ The data is dummy 2011 election results for Delta State. Polling units sit under
 
 First I imported the SQL dump into MySQL and looked at the tables. The ones that actually matter for the questions are `polling_unit`, `announced_pu_results`, `lga`, `ward` and `party`.
 
-I did not recreate those tables from Django. They already exist, so I mapped models onto them (`managed = False`) and just read/write through the ORM.
+I did not recreate those tables from Django. They already exist, so I mapped models onto them using:
+
+```
+python manage.py inspectdb polling_unit announced_pu_results lga ward party announced_lga_results
+```
+
+I copied that into `bincom_test/models.py`, left `managed = False` so Django would not try to rebuild the tables, and just read/write through the ORM.
 
 One thing that is easy to get wrong: results are tied to `polling_unit.uniqueid`, not `polling_unit_id`. The brief even flags this. Also, `polling_unit.lga_id` matches `lga.lga_id`, not `lga.uniqueid`.
 
