@@ -1,0 +1,61 @@
+{% extends "bincom_test/base.html" %}
+
+{% block title %}Polling unit results{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Polling unit results</h1>
+
+<form method="get" class="row g-3 align-items-end mb-4">
+  <div class="col-md-8">
+    <label for="uniqueid" class="form-label">Select a polling unit</label>
+    <select name="uniqueid" id="uniqueid" class="form-select" required>
+      <option value="">Choose...</option>
+
+      {% for unit in polling_units %}
+        <option value="{{ unit.uniqueid }}" {% if selected_id == unit.uniqueid|stringformat:"s" %}selected{% endif %}>
+          {{ unit.uniqueid }} — {{ unit.polling_unit_name|default:"Unnamed" }}
+          {% if unit.polling_unit_number %}({{ unit.polling_unit_number }}){% endif %}
+        </option>
+      {% endfor %}
+
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <button type="submit" class="btn btn-success">Show results</button>
+  </div>
+  
+</form>
+
+{% if selected_id %}
+  {% if selected_unit %}
+    <p class="mb-3">
+      <strong>{{ selected_unit.polling_unit_name|default:"Unnamed unit" }}</strong>
+      · Unique ID {{ selected_unit.uniqueid }}
+    </p>
+  {% endif %}
+
+  {% if results %}
+    <table class="table table-striped table-bordered bg-white">
+      <thead class="table-success">
+        <tr>
+          <th>Party</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in results %}
+          <tr>
+            <td>{{ row.party_abbreviation }}</td>
+            <td>{{ row.party_score }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="alert alert-warning">
+      No announced results for this polling unit. Try unique ID 8.
+    </div>
+  {% endif %}
+{% endif %}
+{% endblock %}

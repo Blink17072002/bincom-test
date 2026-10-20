@@ -1,0 +1,78 @@
+{% extends "bincom_test/base.html" %}
+
+{% block title %}New polling unit results{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Store results for a new polling unit</h1>
+<p class="text-muted">Enter scores for every party. This creates the unit, then saves one result row per party.</p>
+
+<form method="post" class="card p-4 bg-white shadow-sm">
+  {% csrf_token %}
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="lga_id" class="form-label">Local government</label>
+      <select name="lga_id" id="lga_id" class="form-select" required>
+        <option value="">Choose LGA...</option>
+        {% for lga in lgas %}
+          <option value="{{ lga.lga_id }}">{{ lga.lga_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="ward_uniqueid" class="form-label">Ward</label>
+      <select name="ward_uniqueid" id="ward_uniqueid" class="form-select" required>
+        <option value="">Choose ward...</option>
+        {% for ward in wards %}
+          <option value="{{ ward.uniqueid }}" data-lga-id="{{ ward.lga_id }}">
+            {{ ward.ward_name }} (LGA id {{ ward.lga_id }})
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="polling_unit_name" class="form-label">Polling unit name</label>
+      <input type="text" name="polling_unit_name" id="polling_unit_name" class="form-control" required>
+    </div>
+    <div class="col-md-6">
+      <label for="polling_unit_number" class="form-label">Polling unit number (optional)</label>
+      <input type="text" name="polling_unit_number" id="polling_unit_number" class="form-control" placeholder="e.g. DT1708099">
+    </div>
+    <div class="col-md-6">
+      <label for="entered_by_user" class="form-label">Entered by</label>
+      <input type="text" name="entered_by_user" id="entered_by_user" class="form-control" value="web">
+    </div>
+  </div>
+
+  <h2 class="h5 mt-4">Party scores</h2>
+  <div class="row g-3">
+    {% for party in parties %}
+      <div class="col-md-4">
+        <label class="form-label" for="score_{{ party.id }}">{{ party.partyname }}</label>
+        <input type="number" min="0" step="1" name="score_{{ party.id }}" id="score_{{ party.id }}" class="form-control" value="0" required>
+      </div>
+    {% endfor %}
+  </div>
+
+  <button type="submit" class="btn btn-success mt-4">Save results</button>
+</form>
+
+<script>
+  const lgaSelect = document.getElementById("lga_id");
+  const wardSelect = document.getElementById("ward_uniqueid");
+  const wardOptions = Array.from(wardSelect.options);
+
+  function filterWards() {
+    const lgaId = lgaSelect.value;
+    wardSelect.innerHTML = "";
+    wardSelect.appendChild(wardOptions[0].cloneNode(true));
+    wardOptions.slice(1).forEach((option) => {
+      if (!lgaId || option.dataset.lgaId === lgaId) {
+        wardSelect.appendChild(option.cloneNode(true));
+      }
+    });
+  }
+
+  lgaSelect.addEventListener("change", filterWards);
+</script>
+{% endblock %}

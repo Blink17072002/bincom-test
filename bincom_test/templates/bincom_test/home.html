@@ -1,0 +1,15 @@
+{% extends "bincom_test/base.html" %}
+
+{% block content %}
+    <h1 class="h3 mb-3">Bincom preliminary test</h1>
+    <p class="text-muted">Dummy 2011 polling-unit results for Delta State</p>
+    <a class="btn btn-success" href="{% url 'polling_unit_result' %}">
+        Question 1: View a polling unit
+    </a>
+    <a class="btn btn-outline-success ms-2" href="{% url 'lga_result' %}">
+        Question 2: Sum results by LGA
+    </a>
+    <a class="btn btn-outline-success ms-2" href="{% url 'new_polling_unit_result' %}">
+        Question 3: Store new results
+    </a>
+{% endblock %}
