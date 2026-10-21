@@ -85,19 +85,51 @@ WSGI_APPLICATION = 'project.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bincomdjangotest',
-        'USER': 'root',
-        'PASSWORD': os.environ.get("DB_PASSWORD"),
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'bincomdjangotest',
+#         'USER': 'root',
+#         'PASSWORD': os.environ.get("DB_PASSWORD"),
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+#     }
+# }
+
+
+if os.environ.get("USE_SQLITE") == "1":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "bincomdjangotest",
+            "USER": "root",
+            "PASSWORD": os.environ.get("DB_PASSWORD"),
+            "HOST": "127.0.0.1",
+            "PORT": "3306",
+            "OPTIONS": {
+                "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "bincomtest.pythonanywhere.com",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://bincomtest.pythonanywhere.com",
+]
 
 
 # Password validation
